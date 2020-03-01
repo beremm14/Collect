@@ -1,19 +1,23 @@
-package data.vinyl;
+package data;
 
-import data.JsonExport;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author emil
  */
-public class Vinyls implements JsonExport {
+public class Config implements JsonExport {
     
-    private final List<LP> lps = new ArrayList<>();
+    private static Config instance;
+    
+    public static Config getInstance() {
+        if (instance == null) {
+            instance = new Config();
+        }
+        return instance;
+    }
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {
