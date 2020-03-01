@@ -1,5 +1,6 @@
-package data;
+package data.vinyl;
 
+import data.JsonExport;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;

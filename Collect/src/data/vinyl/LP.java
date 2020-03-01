@@ -1,5 +1,7 @@
-package data;
+package data.vinyl;
 
+import data.Artist;
+import data.JsonObjAble;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.Json;
