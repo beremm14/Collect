@@ -18,6 +18,45 @@ public class Config implements JsonExport {
         }
         return instance;
     }
+    
+    private boolean vinyl;
+    private boolean movie;
+    private boolean book;
+    
+    private String directory;
+
+    public boolean isVinyl() {
+        return vinyl;
+    }
+
+    public void setVinyl(boolean vinyl) {
+        this.vinyl = vinyl;
+    }
+
+    public boolean isMovie() {
+        return movie;
+    }
+
+    public void setMovie(boolean movie) {
+        this.movie = movie;
+    }
+
+    public boolean isBook() {
+        return book;
+    }
+
+    public void setBook(boolean book) {
+        this.book = book;
+    }
+
+    public String getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+    
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {

@@ -2,6 +2,7 @@ package data.vinyl;
 
 import data.JsonObjAble;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -14,13 +15,13 @@ import javax.json.JsonValue;
  *
  * @author emil
  */
-public class LP implements JsonObjAble {
+public class LP implements JsonObjAble, Comparable<LP> {
     
     private final String name;
     private final String genre;
     private final Artist interpret;
     private final Artist composer;
-    private final int year;
+    private final Integer year;
     private final String label;
     private final List<Song> songs = new ArrayList<>();
 
@@ -45,6 +46,7 @@ public class LP implements JsonObjAble {
         for (JsonValue v : array) {
             songs.add(new Song(v.asJsonObject()));
         }
+        Collections.sort(songs);
     }
 
     public String getName() {
@@ -63,7 +65,7 @@ public class LP implements JsonObjAble {
         return composer;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
@@ -86,6 +88,7 @@ public class LP implements JsonObjAble {
         b.add("Year", year);
         b.add("Label", label);
         
+        Collections.sort(songs);
         JsonArrayBuilder ab = Json.createArrayBuilder();
         for (Song s : songs) {
             ab.add(s.toJsonObject());
@@ -96,6 +99,12 @@ public class LP implements JsonObjAble {
         return b.build();
     }
 
-
+    @Override
+    public int compareTo(LP o) {
+        int rv = this.getInterpret().compareTo(o.getInterpret());
+        if (rv == 0)
+            rv = this.getYear().compareTo(o.getYear());
+        return rv;
+    }
     
 }

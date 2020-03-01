@@ -1,5 +1,6 @@
 package data;
 
+import data.book.Book;
 import data.movie.Movie;
 import data.vinyl.LP;
 import java.io.BufferedWriter;
@@ -25,6 +26,7 @@ public class Database implements JsonExport {
     
     private final List<LP> lps = new ArrayList<>();
     private final List<Movie> movies = new ArrayList<>();
+    private final List<Book> books = new ArrayList<>();
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {

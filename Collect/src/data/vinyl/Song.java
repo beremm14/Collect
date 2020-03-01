@@ -9,10 +9,10 @@ import javax.json.JsonObjectBuilder;
  *
  * @author emil
  */
-public class Song implements JsonObjAble {
+public class Song implements JsonObjAble, Comparable<Song> {
     
     private final String name;
-    private final int pos;
+    private final Integer pos;
     private final int posOnSide;
     private final int side;
 
@@ -34,7 +34,7 @@ public class Song implements JsonObjAble {
         return name;
     }
 
-    public int getPos() {
+    public Integer getPos() {
         return pos;
     }
 
@@ -56,6 +56,11 @@ public class Song implements JsonObjAble {
         b.add("Side", side);
         
         return b.build();
+    }
+
+    @Override
+    public int compareTo(Song o) {
+        return this.getPos().compareTo(o.getPos());
     }
 
 }

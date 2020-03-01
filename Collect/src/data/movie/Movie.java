@@ -9,7 +9,7 @@ import javax.json.JsonObjectBuilder;
  *
  * @author emil
  */
-public class Movie implements JsonObjAble {
+public class Movie implements JsonObjAble, Comparable<Movie> {
     
     private final String title;
     private final String genre;
@@ -73,8 +73,6 @@ public class Movie implements JsonObjAble {
     public boolean isSeries() {
         return series;
     }
-    
-    
 
     @Override
     public JsonObject toJsonObject() {
@@ -90,6 +88,11 @@ public class Movie implements JsonObjAble {
         b.add("Series", series);
         
         return b.build();
+    }
+
+    @Override
+    public int compareTo(Movie o) {
+        return this.getName().compareTo(o.getName());
     }
     
 }

@@ -9,7 +9,7 @@ import javax.json.JsonObjectBuilder;
  *
  * @author emil
  */
-public class Book implements JsonObjAble {
+public class Book implements JsonObjAble, Comparable<Book> {
     
     private final String title;
     private final String author;
@@ -66,6 +66,11 @@ public class Book implements JsonObjAble {
         b.add("Year", year);
         
         return b.build();
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.getTitle().compareTo(o.getTitle());
     }
 
 }
