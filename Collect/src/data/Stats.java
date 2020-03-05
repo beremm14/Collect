@@ -5,13 +5,18 @@ import data.movie.Movie;
 import data.vinyl.LP;
 import java.util.HashMap;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
  * @author emil
  */
-public class Stats {
+public class Stats implements JsonObjAble {
     
     private static Stats instance;
     
@@ -19,6 +24,16 @@ public class Stats {
         if (instance == null) {
             instance = new Stats();
         }
+        return instance;
+    }
+    
+    public Stats createInstance(JsonObject input) {
+        if (instance == null) {
+            instance = new Stats();
+        }
+        
+        
+        
         return instance;
     }
     
@@ -281,6 +296,45 @@ public class Stats {
 
     public DefaultPieDataset getMovieCountriesSet() {
         return movieCountriesSet;
+    }
+    
+    private JsonArray convertToJsonArray(HashMap<String, Integer> input) {
+        JsonArrayBuilder ab = Json.createArrayBuilder();
+        for (Map.Entry<String,Integer> entry : input.entrySet()) {
+            JsonObjectBuilder ob = Json.createObjectBuilder();
+            ob.add("Key", entry.getKey());
+            ob.add("Value", entry.getValue());
+            ab.add(ob.build());
+        }
+        return ab.build();
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObjectBuilder b = Json.createObjectBuilder();
+        
+        b.add("Vinyl Average Year", vinylAverageYear);
+        b.add("Vinyl Average Song Count", vinylAverageSongCount);
+        b.add("Vinyl Percentage Active", vinylPercentageActive);
+        
+        b.add("Book Average Year", bookAverageYear);
+        
+        b.add("Movie Average Year", movieAverageYear);
+        b.add("Movie Percentage Series", moviePercentageSeries);
+        
+        b.add("Vinyl Genres", convertToJsonArray(vinylGenres));
+        b.add("Vinyl Albums Of Interpret", convertToJsonArray(vinylAlbumsOfInterpret));
+        b.add("Vinyl Countries", convertToJsonArray(vinylCountries));
+        b.add("Vinyl Labels", convertToJsonArray(vinylLabels));
+        
+        b.add("Book Authors", convertToJsonArray(bookAuthors));
+        b.add("Book Genres", convertToJsonArray(bookGenres));
+        
+        b.add("Movie Genres", convertToJsonArray(movieGenres));
+        b.add("Movie Directors", convertToJsonArray(movieDirectors));
+        b.add("Movie Countries", convertToJsonArray(movieCountries));
+        
+        return b.build();
     }
     
 }
