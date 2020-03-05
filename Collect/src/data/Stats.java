@@ -4,6 +4,8 @@ import data.book.Book;
 import data.movie.Movie;
 import data.vinyl.LP;
 import java.util.HashMap;
+import java.util.Map;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -24,19 +26,40 @@ public class Stats {
     private final HashMap<String, Integer> vinylAlbumsOfInterpret = new HashMap<>();
     private final HashMap<String, Integer> vinylCountries = new HashMap<>();
     private final HashMap<String, Integer> vinylLabels = new HashMap<>();
+    
+    private final DefaultPieDataset vinylGenresSet = new DefaultPieDataset();
+    private final DefaultPieDataset vinylAlbumsOfInterpretSet = new DefaultPieDataset();
+    private final DefaultPieDataset vinylCountriesSet = new DefaultPieDataset();
+    private final DefaultPieDataset vinylLabelsSet = new DefaultPieDataset();
+    
     private int vinylAverageYear;
     private int vinylAverageSongCount;
     private double vinylPercentageActive;
     
     private final HashMap<String, Integer> bookAuthors = new HashMap<>();
     private final HashMap<String, Integer> bookGenres = new HashMap<>();
+    
+    private final DefaultPieDataset bookAuthorsSet = new DefaultPieDataset();
+    private final DefaultPieDataset bookGenresSet = new DefaultPieDataset();
+    
     private int bookAverageYear;
     
     private final HashMap<String, Integer> movieGenres = new HashMap<>();
     private final HashMap<String, Integer> movieDirectors = new HashMap<>();
     private final HashMap<String, Integer> movieCountries = new HashMap<>();
+    
+    private final DefaultPieDataset movieGenresSet = new DefaultPieDataset();
+    private final DefaultPieDataset movieDirectorsSet = new DefaultPieDataset();
+    private final DefaultPieDataset movieCountriesSet = new DefaultPieDataset();
+    
     private int movieAverageYear;
     private double moviePercentageSeries;
+    
+    private void convertToDataset(HashMap<String, Integer> input, DefaultPieDataset output) {
+        for (Map.Entry<String,Integer> entry : input.entrySet()) {
+            output.setValue(entry.getKey(), entry.getValue());
+        }
+    }
     
     private void updateVinyls() {
         int avYear = 0;
@@ -121,10 +144,47 @@ public class Stats {
         moviePercentageSeries = 100. * percSeries / (double)Database.getInstance().getMovies().size();
     }
     
+    public void clearEverything() {
+        vinylAlbumsOfInterpret.clear();
+        vinylAlbumsOfInterpretSet.clear();
+        vinylCountries.clear();
+        vinylCountriesSet.clear();
+        vinylGenres.clear();
+        vinylGenresSet.clear();
+        vinylLabels.clear();
+        vinylLabelsSet.clear();
+        
+        bookAuthors.clear();
+        bookAuthorsSet.clear();
+        bookGenres.clear();
+        bookGenresSet.clear();
+        
+        movieCountries.clear();
+        movieCountriesSet.clear();
+        movieDirectors.clear();
+        movieDirectorsSet.clear();
+        movieGenres.clear();
+        movieGenresSet.clear();
+    }
+    
     public void updateInstance() {
+        clearEverything();
+        
         updateVinyls();
         updateBooks();
         updateMovies();
+        
+        convertToDataset(vinylGenres, vinylGenresSet);
+        convertToDataset(vinylAlbumsOfInterpret, vinylAlbumsOfInterpretSet);
+        convertToDataset(vinylCountries, vinylCountriesSet);
+        convertToDataset(vinylLabels, vinylLabelsSet);
+        
+        convertToDataset(bookAuthors, bookAuthorsSet);
+        convertToDataset(bookGenres, bookGenresSet);
+        
+        convertToDataset(movieCountries, movieCountriesSet);
+        convertToDataset(movieDirectors, movieDirectorsSet);
+        convertToDataset(movieGenres, movieGenresSet);
     }
 
     public HashMap<String, Integer> getVinylGenres() {
@@ -185,6 +245,42 @@ public class Stats {
 
     public double getMoviePercentageSeries() {
         return moviePercentageSeries;
+    }
+
+    public DefaultPieDataset getVinylGenresSet() {
+        return vinylGenresSet;
+    }
+
+    public DefaultPieDataset getVinylAlbumsOfInterpretSet() {
+        return vinylAlbumsOfInterpretSet;
+    }
+
+    public DefaultPieDataset getVinylCountriesSet() {
+        return vinylCountriesSet;
+    }
+
+    public DefaultPieDataset getVinylLabelsSet() {
+        return vinylLabelsSet;
+    }
+
+    public DefaultPieDataset getBookAuthorsSet() {
+        return bookAuthorsSet;
+    }
+
+    public DefaultPieDataset getBookGenresSet() {
+        return bookGenresSet;
+    }
+
+    public DefaultPieDataset getMovieGenresSet() {
+        return movieGenresSet;
+    }
+
+    public DefaultPieDataset getMovieDirectorsSet() {
+        return movieDirectorsSet;
+    }
+
+    public DefaultPieDataset getMovieCountriesSet() {
+        return movieCountriesSet;
     }
     
 }
