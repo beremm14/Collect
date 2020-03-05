@@ -24,6 +24,8 @@ public class Database implements JsonExport {
         return instance;
     }
     
+    private Database() {}
+    
     private final ArrayList<LP> lps = new ArrayList<>();
     private final ArrayList<Movie> movies = new ArrayList<>();
     private final ArrayList<Book> books = new ArrayList<>();

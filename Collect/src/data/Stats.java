@@ -10,6 +10,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import org.jfree.data.general.DefaultPieDataset;
 
 /**
@@ -29,12 +30,38 @@ public class Stats implements JsonObjAble {
     
     public Stats createInstance(JsonObject input) {
         if (instance == null) {
-            instance = new Stats();
+            instance = new Stats(input);
         }
-        
-        
-        
         return instance;
+    }
+    
+    private Stats() {}
+    
+    private Stats(JsonObject input) {
+        clearEverything();
+        
+        this.vinylAverageSongCount = input.getInt("Vinyl Average Song Count");
+        this.vinylAverageYear = input.getInt("Vinyl Average Year");
+        this.vinylPercentageActive = input.getJsonNumber("Vinyl Percentage Active").doubleValue();
+        
+        this.bookAverageYear = input.getInt("Book Average Year");
+        
+        this.movieAverageYear = input.getInt("Movie Average Year");
+        this.moviePercentageSeries = input.getJsonNumber("Movie Percentage Series").doubleValue();
+        
+        fillHashMaps(input.getJsonArray("Vinyl Genres"), vinylGenres);
+        fillHashMaps(input.getJsonArray("Vinyl Albums Of Interpret"), vinylAlbumsOfInterpret);
+        fillHashMaps(input.getJsonArray("Vinyl Countries"), vinylCountries);
+        fillHashMaps(input.getJsonArray("Vinyl Labels"), vinylLabels);
+        
+        fillHashMaps(input.getJsonArray("Book Authors"), bookAuthors);
+        fillHashMaps(input.getJsonArray("Book Genres"), bookGenres);
+        
+        fillHashMaps(input.getJsonArray("Movie Genres"), movieGenres);
+        fillHashMaps(input.getJsonArray("Movie Directors"), movieDirectors);
+        fillHashMaps(input.getJsonArray("Movie Countries"), movieCountries);
+        
+        updateDatasets();
     }
     
     private final HashMap<String, Integer> vinylGenres = new HashMap<>();
@@ -182,13 +209,7 @@ public class Stats implements JsonObjAble {
         movieGenresSet.clear();
     }
     
-    public void updateInstance() {
-        clearEverything();
-        
-        updateVinyls();
-        updateBooks();
-        updateMovies();
-        
+    private void updateDatasets() {
         convertToDataset(vinylGenres, vinylGenresSet);
         convertToDataset(vinylAlbumsOfInterpret, vinylAlbumsOfInterpretSet);
         convertToDataset(vinylCountries, vinylCountriesSet);
@@ -200,6 +221,16 @@ public class Stats implements JsonObjAble {
         convertToDataset(movieCountries, movieCountriesSet);
         convertToDataset(movieDirectors, movieDirectorsSet);
         convertToDataset(movieGenres, movieGenresSet);
+    }
+    
+    public void updateInstance() {
+        clearEverything();
+        
+        updateVinyls();
+        updateBooks();
+        updateMovies();
+        
+        updateDatasets();
     }
 
     public HashMap<String, Integer> getVinylGenres() {
@@ -307,6 +338,13 @@ public class Stats implements JsonObjAble {
             ab.add(ob.build());
         }
         return ab.build();
+    }
+    
+    private void fillHashMaps(JsonArray input, HashMap<String, Integer> output) {
+        for (JsonValue v : input) {
+            JsonObject o = v.asJsonObject();
+            output.put(o.getString("Key"), o.getInt("Value"));
+        }
     }
 
     @Override
