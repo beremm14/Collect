@@ -24,6 +24,8 @@ public class Config implements JsonExport {
     private boolean book;
     
     private String directory;
+    
+    private boolean dark;
 
     public boolean isVinyl() {
         return vinyl;
@@ -56,7 +58,14 @@ public class Config implements JsonExport {
     public void setDirectory(String directory) {
         this.directory = directory;
     }
-    
+
+    public boolean isDark() {
+        return dark;
+    }
+
+    public void setDark(boolean dark) {
+        this.dark = dark;
+    }
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {

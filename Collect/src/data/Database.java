@@ -24,9 +24,21 @@ public class Database implements JsonExport {
         return instance;
     }
     
-    private final List<LP> lps = new ArrayList<>();
-    private final List<Movie> movies = new ArrayList<>();
-    private final List<Book> books = new ArrayList<>();
+    private final ArrayList<LP> lps = new ArrayList<>();
+    private final ArrayList<Movie> movies = new ArrayList<>();
+    private final ArrayList<Book> books = new ArrayList<>();
+
+    public ArrayList<LP> getLps() {
+        return lps;
+    }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
+    }
+
+    public ArrayList<Book> getBooks() {
+        return books;
+    }
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {
