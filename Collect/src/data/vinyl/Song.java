@@ -49,6 +49,10 @@ public class Song implements JsonObjAble, Comparable<Song> {
         return side;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
     @Override
     public JsonObject toJsonObject() {
         JsonObjectBuilder b = Json.createObjectBuilder();

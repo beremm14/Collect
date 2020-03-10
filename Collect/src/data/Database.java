@@ -3,6 +3,7 @@ package data;
 import data.book.Book;
 import data.movie.Movie;
 import data.vinyl.LP;
+import data.vinyl.Song;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,8 @@ public class Database implements JsonExport {
     private final ArrayList<LP> lps = new ArrayList<>();
     private final ArrayList<Movie> movies = new ArrayList<>();
     private final ArrayList<Book> books = new ArrayList<>();
+    
+    private final ArrayList<Song> favoriteSongs = new ArrayList<>();
 
     public ArrayList<LP> getLps() {
         return lps;
@@ -47,6 +50,22 @@ public class Database implements JsonExport {
 
     public ArrayList<Book> getBooks() {
         return books;
+    }
+
+    public ArrayList<Song> getFavoriteSongs() {
+        return favoriteSongs;
+    }
+    
+    public void updateFavoriteSongs() {
+        favoriteSongs.clear();
+        Collections.sort(lps);
+        
+        for (LP lp : lps) {
+            for (Song s : lp.getSongs()) {
+                if (s.isFavorite())
+                    favoriteSongs.add(s);
+            }
+        }
     }
 
     @Override
@@ -70,10 +89,16 @@ public class Database implements JsonExport {
             abb.add(b.toJsonObject());
         }
         
+        JsonArrayBuilder abf = Json.createArrayBuilder();
+        for (Song s : favoriteSongs) {
+            abf.add(s.toJsonObject());
+        }
+        
         JsonObjectBuilder ob = Json.createObjectBuilder();
         ob.add("Vinyls", abl.build());
         ob.add("Books", abb.build());
         ob.add("Movies", abm.build());
+        ob.add("Favorite Songs", abf.build());
         ob.add("Stats", Stats.getInstance().toJsonObject());
         
         w.write(ob.build().toString());
@@ -84,6 +109,7 @@ public class Database implements JsonExport {
         lps.clear();
         books.clear();
         movies.clear();
+        favoriteSongs.clear();
         
         JsonObject obj;
         try (JsonReader jsonReader = Json.createReader(fis)) {
@@ -103,6 +129,11 @@ public class Database implements JsonExport {
         JsonArray jMovies = obj.getJsonArray("Movies");
         for (JsonValue v : jMovies) {
             movies.add(new Movie(v.asJsonObject()));
+        }
+        
+        JsonArray jFavSongs = obj.getJsonArray("Favorite Songs");
+        for (JsonValue v : jFavSongs) {
+            favoriteSongs.add(new Song(v.asJsonObject()));
         }
         
         Stats.createInstance(obj.getJsonObject("Stats"));
