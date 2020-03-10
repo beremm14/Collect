@@ -15,12 +15,14 @@ public class Song implements JsonObjAble, Comparable<Song> {
     private final Integer pos;
     private final int posOnSide;
     private final int side;
+    private final boolean favorite;
 
-    public Song(String name, int pos, int posOnSide, int side) {
+    public Song(String name, int pos, int posOnSide, int side, boolean favorite) {
         this.name = name;
         this.pos = pos;
         this.posOnSide = posOnSide;
         this.side = side;
+        this.favorite = favorite;
     }
     
     public Song(JsonObject input) {
@@ -28,6 +30,7 @@ public class Song implements JsonObjAble, Comparable<Song> {
         this.pos = input.getInt("Pos");
         this.posOnSide = input.getInt("PosOnSide");
         this.side = input.getInt("Side");
+        this.favorite = input.getBoolean("Favorite");
     }
 
     public String getName() {
@@ -54,6 +57,7 @@ public class Song implements JsonObjAble, Comparable<Song> {
         b.add("Pos", pos);
         b.add("PosOnSide", posOnSide);
         b.add("Side", side);
+        b.add("Favorite", favorite);
         
         return b.build();
     }

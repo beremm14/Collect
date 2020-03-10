@@ -3,6 +3,7 @@ package data;
 import data.book.Book;
 import data.movie.Movie;
 import data.vinyl.LP;
+import data.vinyl.Song;
 import java.util.HashMap;
 import java.util.Map;
 import javax.json.Json;
@@ -28,7 +29,7 @@ public class Stats implements JsonObjAble {
         return instance;
     }
     
-    public Stats createInstance(JsonObject input) {
+    public static Stats createInstance(JsonObject input) {
         if (instance == null) {
             instance = new Stats(input);
         }
@@ -53,6 +54,8 @@ public class Stats implements JsonObjAble {
         fillHashMaps(input.getJsonArray("Vinyl Albums Of Interpret"), vinylAlbumsOfInterpret);
         fillHashMaps(input.getJsonArray("Vinyl Countries"), vinylCountries);
         fillHashMaps(input.getJsonArray("Vinyl Labels"), vinylLabels);
+        fillHashMaps(input.getJsonArray("Vinyl Favorite Songs Album"), vinylFavSongsAlbum);
+        fillHashMaps(input.getJsonArray("Vinyl Favorite Songs Interpret"), vinylFavSongsInterpret);
         
         fillHashMaps(input.getJsonArray("Book Authors"), bookAuthors);
         fillHashMaps(input.getJsonArray("Book Genres"), bookGenres);
@@ -68,11 +71,15 @@ public class Stats implements JsonObjAble {
     private final HashMap<String, Integer> vinylAlbumsOfInterpret = new HashMap<>();
     private final HashMap<String, Integer> vinylCountries = new HashMap<>();
     private final HashMap<String, Integer> vinylLabels = new HashMap<>();
+    private final HashMap<String, Integer> vinylFavSongsAlbum = new HashMap<>();
+    private final HashMap<String, Integer> vinylFavSongsInterpret = new HashMap<>();
     
     private final DefaultPieDataset vinylGenresSet = new DefaultPieDataset();
     private final DefaultPieDataset vinylAlbumsOfInterpretSet = new DefaultPieDataset();
     private final DefaultPieDataset vinylCountriesSet = new DefaultPieDataset();
     private final DefaultPieDataset vinylLabelsSet = new DefaultPieDataset();
+    private final DefaultPieDataset vinylFavSongsAlbumSet = new DefaultPieDataset();
+    private final DefaultPieDataset vinylFavSongsIntepretSet = new DefaultPieDataset();
     
     private int vinylAverageYear;
     private int vinylAverageSongCount;
@@ -103,6 +110,24 @@ public class Stats implements JsonObjAble {
         }
     }
     
+    private JsonArray convertToJsonArray(HashMap<String, Integer> input) {
+        JsonArrayBuilder ab = Json.createArrayBuilder();
+        for (Map.Entry<String,Integer> entry : input.entrySet()) {
+            JsonObjectBuilder ob = Json.createObjectBuilder();
+            ob.add("Key", entry.getKey());
+            ob.add("Value", entry.getValue());
+            ab.add(ob.build());
+        }
+        return ab.build();
+    }
+    
+    private void fillHashMaps(JsonArray input, HashMap<String, Integer> output) {
+        for (JsonValue v : input) {
+            JsonObject o = v.asJsonObject();
+            output.put(o.getString("Key"), o.getInt("Value"));
+        }
+    }
+    
     private void updateVinyls() {
         int avYear = 0;
         int avSongCount = 0;
@@ -130,6 +155,20 @@ public class Stats implements JsonObjAble {
             
             if(lp.getInterpret().isActive())
                 percActive++;
+            
+            for (Song s : lp.getSongs()) {
+                if (s.isFavorite()) {
+                    if (!vinylFavSongsAlbum.containsKey(lp.getName()))
+                        vinylFavSongsAlbum.put(lp.getName(), 1);
+                    else
+                        vinylFavSongsAlbum.replace(lp.getName(), vinylFavSongsAlbum.get(lp.getName()) + 1);
+                    
+                    if (!vinylFavSongsInterpret.containsKey(lp.getInterpret().getName()))
+                        vinylFavSongsInterpret.put(lp.getInterpret().getName(), 1);
+                    else
+                        vinylFavSongsInterpret.replace(lp.getInterpret().getName(), vinylFavSongsInterpret.get(lp.getInterpret().getName()) + 1);
+                }
+            }
             
             avYear += lp.getYear();
             avSongCount += lp.getSongs().size();
@@ -195,6 +234,10 @@ public class Stats implements JsonObjAble {
         vinylGenresSet.clear();
         vinylLabels.clear();
         vinylLabelsSet.clear();
+        vinylFavSongsAlbum.clear();
+        vinylFavSongsAlbumSet.clear();
+        vinylFavSongsIntepretSet.clear();
+        vinylFavSongsInterpret.clear();
         
         bookAuthors.clear();
         bookAuthorsSet.clear();
@@ -214,6 +257,8 @@ public class Stats implements JsonObjAble {
         convertToDataset(vinylAlbumsOfInterpret, vinylAlbumsOfInterpretSet);
         convertToDataset(vinylCountries, vinylCountriesSet);
         convertToDataset(vinylLabels, vinylLabelsSet);
+        convertToDataset(vinylFavSongsAlbum, vinylFavSongsAlbumSet);
+        convertToDataset(vinylFavSongsInterpret, vinylFavSongsIntepretSet);
         
         convertToDataset(bookAuthors, bookAuthorsSet);
         convertToDataset(bookGenres, bookGenresSet);
@@ -327,25 +372,25 @@ public class Stats implements JsonObjAble {
 
     public DefaultPieDataset getMovieCountriesSet() {
         return movieCountriesSet;
+    }    
+
+    public HashMap<String, Integer> getVinylFavSongsAlbum() {
+        return vinylFavSongsAlbum;
+    }
+
+    public HashMap<String, Integer> getVinylFavSongsInterpret() {
+        return vinylFavSongsInterpret;
+    }
+
+    public DefaultPieDataset getVinylFavSongsAlbumSet() {
+        return vinylFavSongsAlbumSet;
+    }
+
+    public DefaultPieDataset getVinylFavSongsIntepretSet() {
+        return vinylFavSongsIntepretSet;
     }
     
-    private JsonArray convertToJsonArray(HashMap<String, Integer> input) {
-        JsonArrayBuilder ab = Json.createArrayBuilder();
-        for (Map.Entry<String,Integer> entry : input.entrySet()) {
-            JsonObjectBuilder ob = Json.createObjectBuilder();
-            ob.add("Key", entry.getKey());
-            ob.add("Value", entry.getValue());
-            ab.add(ob.build());
-        }
-        return ab.build();
-    }
     
-    private void fillHashMaps(JsonArray input, HashMap<String, Integer> output) {
-        for (JsonValue v : input) {
-            JsonObject o = v.asJsonObject();
-            output.put(o.getString("Key"), o.getInt("Value"));
-        }
-    }
 
     @Override
     public JsonObject toJsonObject() {
@@ -364,6 +409,8 @@ public class Stats implements JsonObjAble {
         b.add("Vinyl Albums Of Interpret", convertToJsonArray(vinylAlbumsOfInterpret));
         b.add("Vinyl Countries", convertToJsonArray(vinylCountries));
         b.add("Vinyl Labels", convertToJsonArray(vinylLabels));
+        b.add("Vinyl Favorite Songs Album", convertToJsonArray(vinylFavSongsAlbum));
+        b.add("Vinyl Favorite Songs Interpret", convertToJsonArray(vinylFavSongsInterpret));
         
         b.add("Book Authors", convertToJsonArray(bookAuthors));
         b.add("Book Genres", convertToJsonArray(bookGenres));
