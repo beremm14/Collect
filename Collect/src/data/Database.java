@@ -74,6 +74,7 @@ public class Database implements JsonExport {
         ob.add("Vinyls", abl.build());
         ob.add("Books", abb.build());
         ob.add("Movies", abm.build());
+        ob.add("Stats", Stats.getInstance().toJsonObject());
         
         w.write(ob.build().toString());
     }
@@ -103,6 +104,8 @@ public class Database implements JsonExport {
         for (JsonValue v : jMovies) {
             movies.add(new Movie(v.asJsonObject()));
         }
+        
+        Stats.createInstance(obj.getJsonObject("Stats"));
         
         Collections.sort(lps);
         Collections.sort(movies);

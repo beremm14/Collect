@@ -3,6 +3,10 @@ package data;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 
 /**
  *
@@ -18,6 +22,8 @@ public class Config implements JsonExport {
         }
         return instance;
     }
+    
+    private Config() {}
     
     private boolean vinyl;
     private boolean movie;
@@ -69,12 +75,29 @@ public class Config implements JsonExport {
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JsonObjectBuilder ob = Json.createObjectBuilder();
+        
+        ob.add("Vinyl Active", vinyl);
+        ob.add("Book Active", book);
+        ob.add("Movie Active", movie);
+        ob.add("Directory", directory);
+        ob.add("Dark", dark);
+        
+        w.write(ob.build().toString());
     }
 
     @Override
     public void loadInto(InputStream fis) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        JsonObject obj;
+        try (JsonReader jsonReader = Json.createReader(fis)) {
+            obj = jsonReader.readObject();
+        }
+        
+        vinyl = obj.getBoolean("Vinyl Active");
+        book = obj.getBoolean("Book Active");
+        movie = obj.getBoolean("Movie Active");
+        directory = obj.getString("Directory");
+        dark = obj.getBoolean("Dark");
     }
     
 }
