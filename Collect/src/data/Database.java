@@ -67,6 +67,14 @@ public class Database implements JsonExport {
             }
         }
     }
+    
+    public int getSongCount() {
+        int i = 0;
+        for (LP lp : lps) {
+            i += lp.getSongs().size();
+        }
+        return i;
+    }
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {

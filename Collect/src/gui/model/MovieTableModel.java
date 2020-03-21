@@ -1,5 +1,7 @@
 package gui.model;
 
+import data.Database;
+import data.movie.Movie;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -7,25 +9,38 @@ import javax.swing.table.AbstractTableModel;
  * @author emil
  */
 public class MovieTableModel extends AbstractTableModel {
+    
+    private final String[] columns = {"Title", "Genre", "Director", "Year", "Length", "Country", "Type", "Series"};
 
     @Override
     public int getRowCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Database.getInstance().getMovies().size();
     }
 
     @Override
     public int getColumnCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return columns.length;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Movie m = Database.getInstance().getMovies().get(rowIndex);
+        switch(columnIndex) {
+            case 0: return m.getName();
+            case 1: return m.getGenre();
+            case 2: return m.getDirector();
+            case 3: return m.getYear();
+            case 4: return m.getLength();
+            case 5: return m.getCountry();
+            case 6: return m.getType().toString();
+            case 7: return m.isSeries();
+            default: throw new RuntimeException("wrong column index");
+        }
     }
 
     @Override
     public String getColumnName(int column) {
-        return super.getColumnName(column); //To change body of generated methods, choose Tools | Templates.
+        return columns[column];
     }
     
 }
