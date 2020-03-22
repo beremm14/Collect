@@ -1,11 +1,11 @@
 package gui.model;
 
-import data.Database;
 import data.vinyl.LP;
 import data.vinyl.Song;
 import data.vinyl.SongLpPair;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -19,7 +19,7 @@ public class SongTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return Database.getInstance().getSongCount();
+        return songs.size();
     }
 
     @Override
@@ -50,14 +50,15 @@ public class SongTableModel extends AbstractTableModel {
         return columns[column];
     }
     
-    public void updateSongList() {
+    public void updateSongList(List<LP> lps) {
         songs.clear();
-        for (LP lp : Database.getInstance().getLps()) {
+        for (LP lp : lps) {
             for (Song song : lp.getSongs()) {
                 songs.add(new SongLpPair(song, lp));
             }
         }
         Collections.sort(songs);
+        fireTableDataChanged();
     }
     
 }

@@ -39,6 +39,8 @@ public class Database implements JsonExport {
     private final ArrayList<Book> books = new ArrayList<>();
     
     private final ArrayList<Song> favoriteSongs = new ArrayList<>();
+    
+    private boolean loaded = false;
 
     public ArrayList<LP> getLps() {
         return lps;
@@ -75,6 +77,16 @@ public class Database implements JsonExport {
         }
         return i;
     }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
+    
+    
 
     @Override
     public void writeTo(BufferedWriter w) throws IOException {
